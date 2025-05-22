@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Quiz Game</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .quiz-container {
+      background: #fff;
+      padding: 20px 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      max-width: 400px;
+      width: 100%;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+    }
+
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      background: #eee;
+    }
+
+    .btn:hover {
+      background: #ddd;
+    }
+
+    #next-btn {
+      background-color: #4CAF50;
+      color: white;
+      margin-top: 15px;
+    }
+
+    #next-btn:hover {
+      background-color: #45a049;
+    }
+
+    #score {
+      font-size: 20px;
+      font-weight: bold;
+      margin-top: 20px;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+
+<div class="quiz-container" id="quiz">
+  <h2 id="question">Loading...</h2>
+  <div id="answer-buttons">
+    <!-- Answer options will be injected here -->
+  </div>
+  <button id="next-btn">Next</button>
+  <div id="score"></div>
+</div>
+
+<script>
+  const questions = [
+    {
+      question: "What is the capital of France?",
+      answers: [
+        { text: "Paris", correct: true },
+        { text: "Berlin", correct: false },
+        { text: "Madrid", correct: false },
+        { text: "Rome", correct: false }
+      ]
+    },
+    {
+      question: "Which planet is known as the Red Planet?",
+      answers: [
+        { text: "Earth", correct: false },
+        { text: "Mars", correct: true },
+        { text: "Jupiter", correct: false },
+        { text: "Saturn", correct: false }
+      ]
+    },
+    {
+      question: "Which is the longest river in the world?",
+      answers: [
+        { text: "Nile", correct: true },
+        { text: "Ganga", correct: false },
+        { text: "Kaveri", correct: false },
+        { text: "Krishna", correct: false }
+      ]
+    },
+    {
+      question: "Which is the largest forest  in the world?",
+      answers: [
+        { text: "TaigaA", correct: false },
+        { text: "Primorya", correct: false },
+        { text: "Amagon", correct: true },
+        { text: "Sundaland", correct: false }
+      ]
+    },
+
+
+
+
+
+
+
+
+    {
+      question: "Who wrote 'Hamlet'?",
+      answers: [
+        { text: "Charles Dickens", correct: false },
+        { text: "William Shakespeare", correct: true },
+        { text: "Leo Tolstoy", correct: false },
+        { text: "Mark Twain", correct: false }
+      ]
+    }
+  ];
+
+  const questionElement = document.getElementById("question");
+  const answerButtons = document.getElementById("answer-buttons");
+  const nextButton = document.getElementById("next-btn");
+  const scoreDisplay = document.getElementById("score");
+
+  let currentQuestionIndex = 0;
+  let score = 0;
+
+  function startQuiz() {
+    currentQuestionIndex = 0;
+    score = 0;
+    nextButton.innerText = "Next";
+    scoreDisplay.innerText = '';
+    showQuestion();
+  }
+
+  function showQuestion() {
+    resetState();
+    let currentQuestion = questions[currentQuestionIndex];
+    questionElement.innerText = currentQuestion.question;
+
+    currentQuestion.answers.forEach(answer => {
+      const button = document.createElement("button");
+      button.innerText = answer.text;
+      button.classList.add("btn");
+      if (answer.correct) {
+        button.dataset.correct = answer.correct;
+      }
+      button.addEventListener("click", selectAnswer);
+      answerButtons.appendChild(button);
+    });
+  }
+
+  function resetState() {
+    nextButton.style.display = "none";
+    while (answerButtons.firstChild) {
+      answerButtons.removeChild(answerButtons.firstChild);
+    }
+  }
+
+  function selectAnswer(e) {
+    const selectedBtn = e.target;
+    const isCorrect = selectedBtn.dataset.correct === "true";
+    if (isCorrect) {
+      selectedBtn.style.backgroundColor = "#4CAF50";
+      score++;
+    } else {
+      selectedBtn.style.backgroundColor = "#f44336";
+    }
+
+    Array.from(answerButtons.children).forEach(button => {
+      button.disabled = true;
+    });
+
+    nextButton.style.display = "block";
+  }
+
+  function showScore() {
+    resetState();
+    questionElement.innerText = "Quiz Completed!";
+    scoreDisplay.innerText = `Your Score: ${score} out of ${questions.length}`;
+    nextButton.innerText = "Play Again";
+    nextButton.style.display = "block";
+  }
+
+  function handleNextButton() {
+    currentQuestionIndex++;
+    if (currentQuestionIndex < questions.length) {
+      showQuestion();
+    } else {
+      showScore();
+    }
+  }
+
+  nextButton.addEventListener("click", () => {
+    if (currentQuestionIndex < questions.length) {
+      handleNextButton();
+    } else {
+      startQuiz();
+    }
+  });
+
+  // Start quiz on page load
+  startQuiz();
+</script>
+
+</body>
+</html>
